@@ -1,0 +1,10 @@
+ssh -i "C:\Users\prati\Downloads\alphagocanvas.pem" ubuntu@ec2-3-80-135-5.compute-1.amazonaws.com
+
+
+python -m venv fastapi
+
+source fastapi/bin/activate
+
+cd alphagocanvas
+
+uvicorn alphagocanvas.main:app --reload

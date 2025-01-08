@@ -1,0 +1,192 @@
+CREATE DATABASE LearningManagementSystem;
+USE LearningManagementSystem;
+
+CREATE TABLE CourseTable (
+  CourseID INT PRIMARY KEY,
+  CourseName VARCHAR(255),
+  FacultyID INT,
+  Semester VARCHAR(50),
+  PublishedStatus VARCHAR(50),
+  FOREIGN KEY (FacultyID) REFERENCES FacultyTable(FacultyID)
+);
+
+INSERT INTO CourseTable (CourseID, CourseName, FacultyID, Semester, PublishedStatus) VALUES
+(101, 'Introduction to Computer Science', 1, 'Fall 2024', 'Published'),
+(102, 'Advanced Databases', 2, 'Spring 2024', 'Published'),
+(103, 'Software Engineering Principles', 3, 'Summer 2024', 'Unpublished');
+
+
+--Faculty Table
+CREATE TABLE FacultyTable (
+  FacultyID INT PRIMARY KEY,
+  PasswordHash VARCHAR(255),
+  FacultyName VARCHAR(255)
+);
+INSERT INTO FacultyTable (FacultyID, PasswordHash, FacultyName) VALUES
+(1, 'gopinath@123', 'Gopinath'),
+(2, 'richardsinn@123', 'Richardsinn'),
+(3, 'jerrygao@123', 'Jerry Gao');
+
+CREATE TABLE LoginTable (
+  UserID INT AUTO_INCREMENT PRIMARY KEY,
+  UserEmail VARCHAR(255) UNIQUE NOT NULL,
+  UserPassword VARCHAR(255) NOT NULL,
+  Role ENUM('Student', 'Admin', 'Faculty') NOT NULL
+);
+
+INSERT INTO LoginTable (UserEmail, UserPassword, Role) VALUES
+('gopinath@gmail.com', 'gopinath@123', 'Faculty'),
+('shashi@gmail.com', 'Shashi@123', 'Student'),
+('kohli@gmail.com', 'Kohil@123', 'Admin');
+
+CREATE TABLE UserTable (
+  UserID INT AUTO_INCREMENT PRIMARY KEY,
+  Username VARCHAR(255) UNIQUE,
+  PasswordHash VARCHAR(255),
+  Role ENUM('Faculty', 'Student', 'Admin'),
+  FullName VARCHAR(255),
+  Email VARCHAR(255)
+);
+
+INSERT INTO UserTable (Username, PasswordHash, Role, FullName, Email) VALUES
+('gopinath_faculty', 'hash_gopinath123', 'Faculty', 'Gopinath', 'gopinath@gmail.com'),
+('prathik_student', 'hash_prathik123', 'Student', 'Prathik', 'prathik@gmail.com'),
+('kohli_admin', 'hash_kohli123', 'Admin', 'Kohli', 'kohli@gmail.com');
+
+-- Student Table
+CREATE TABLE StudentTable (
+  StudentID INT PRIMARY KEY,
+  PasswordHash VARCHAR(255),
+  StudentName VARCHAR(255)
+);
+INSERT INTO StudentTable (StudentID, PasswordHash, StudentName) VALUES
+(17510922, 'Shashi@123', 'Shashi'),
+(17512508, 'Prathik@123', 'Prathik'),
+(17465422, 'Nagaraj@123', 'Nagaraj'),
+(17555369, 'Nevil@123', 'Nevil');
+
+-- Admin Table
+CREATE TABLE AdminTable (
+  AdminID INT PRIMARY KEY,
+  PasswordHash VARCHAR(255),
+  AdminName VARCHAR(255)
+);
+
+INSERT INTO AdminTable (AdminID, PasswordHash, AdminName) VALUES
+(1, 'Kohil@123', 'Kohli'),
+(2, 'Dhoni@123', 'Dhoni'),
+(3, 'Rohith@123', 'Rohith');
+
+CREATE TABLE LoginTable (
+  UserID INT AUTO_INCREMENT PRIMARY KEY,
+  UserEmail VARCHAR(255) UNIQUE NOT NULL,
+  UserPassword VARCHAR(255) NOT NULL,
+  Role ENUM('Student', 'Admin', 'Faculty') NOT NULL
+);
+
+INSERT INTO LoginTable (UserEmail, UserPassword, Role) VALUES
+('gopinath@gmail.com', 'gopinath@123', 'Faculty'),
+('shashi@gmail.com', 'Shashi@123', 'Student'),
+('kohli@gmail.com', 'Kohil@123', 'Admin');
+
+CREATE TABLE UserTable (
+  UserID INT AUTO_INCREMENT PRIMARY KEY,
+  Username VARCHAR(255) UNIQUE,
+  PasswordHash VARCHAR(255),
+  Role ENUM('Faculty', 'Student', 'Admin'),
+  FullName VARCHAR(255),
+  Email VARCHAR(255)
+);
+
+INSERT INTO UserTable (Username, PasswordHash, Role, FullName, Email) VALUES
+('gopinath_faculty', 'hash_gopinath123', 'Faculty', 'Gopinath', 'gopinath@gmail.com'),
+('prathik_student', 'hash_prathik123', 'Student', 'Prathik', 'prathik@gmail.com'),
+('kohli_admin', 'hash_kohli123', 'Admin', 'Kohli', 'kohli@gmail.com');
+
+
+-- Create the Enrollment Table
+CREATE TABLE EnrollmentTable (
+  EnrollmentID INT PRIMARY KEY,
+  CourseID INT,
+  StudentID INT,
+  FOREIGN KEY (CourseID) REFERENCES CourseTable(CourseID),
+  FOREIGN KEY (StudentID) REFERENCES StudentTable(StudentID)
+);
+INSERT INTO EnrollmentTable (EnrollmentID, CourseID, StudentID) VALUES
+(1, 101, 017510922),
+(2, 102, 017512508),
+(3, 103, 017465422),
+(4, 101, 017555369);
+
+-- Create the Assignment Table
+CREATE TABLE AssignmentTable (
+  AssignmentID INT PRIMARY KEY,
+  CourseID INT,
+  Title VARCHAR(255),
+  Description TEXT,
+  Deadline DATE,
+  FOREIGN KEY (CourseID) REFERENCES CourseTable(CourseID)
+);
+
+INSERT INTO AssignmentTable (AssignmentID, CourseID, Title, Description, Deadline) VALUES
+(1, 101, '202 Project Assignment', 'Complete the introduction discussion post.', '2024-04-25'),
+(2, 101, 'First Project', 'Work on the first project of the course.', '2024-05-15'),
+(3, 102, 'Database Assignment', 'Submit the ER diagram for the given case study.', '2024-06-20'),
+(4, 103, 'Research Paper', 'Prepare a research paper on software engineering methodologies.', '2024-07-10');
+
+-- Create the Quiz Table
+CREATE TABLE QuizTable (
+  QuizID INT PRIMARY KEY,
+  CourseID INT,
+  Title VARCHAR(256),
+  Description TEXT,
+  TimeLimit INT,
+  FOREIGN KEY (CourseID) REFERENCES CourseTable(CourseID)
+);
+
+INSERT INTO QuizTable (QuizID, CourseID, Title, Description, TimeLimit) VALUES
+(1, 101, 'Intro Quiz', 'A quiz on introductory topics covered in the first week.', 30),
+(2, 101, 'Chapter 1 Quiz', 'A quiz covering the details of Chapter 1.', 20),
+(3, 102, 'SQL Basics', 'A quiz to assess your knowledge on the basics of SQL queries.', 25),
+(4, 103, 'Software Lifecycle Quiz', 'A quiz focusing on the software development lifecycle.', 35);
+
+
+-- Create the Grade Table
+CREATE TABLE GradeTable (
+  GradeID INT PRIMARY KEY,
+  CourseID INT,
+  StudentID INT,
+  AssignmentID INT,
+  QuizID INT,
+  Grade INT,
+  FOREIGN KEY (CourseID) REFERENCES CourseTable(CourseID),
+  FOREIGN KEY (StudentID) REFERENCES StudentTable(StudentID),
+  FOREIGN KEY (AssignmentID) REFERENCES AssignmentTable(AssignmentID),
+  FOREIGN KEY (QuizID) REFERENCES QuizTable(QuizID)
+);
+
+INSERT INTO GradeTable (GradeID, CourseID, StudentID, AssignmentID, QuizID, Grade) VALUES
+(1, 101, 17510922, 1, NULL, 90),
+(2, 101, 17510922, NULL, 1, 85),
+(3, 102, 17512508, 3, NULL, 88),
+(4, 102, 17512508, NULL, 3, 92),
+(5, 103, 17465422, 4, NULL, 95),
+(6, 103, 17465422, NULL, 4, 90);
+
+
+-- Create the Announcement Table
+CREATE TABLE AnnouncementTable (
+  AnnouncementID INT PRIMARY KEY,
+  CourseID INT,
+  Title VARCHAR(255),
+  Content TEXT,
+  DatePosted DATE,
+  FOREIGN KEY (CourseID) REFERENCES CourseTable(CourseID)
+);
+
+INSERT INTO AnnouncementTable (AnnouncementID, CourseID, Title, Content, DatePosted) VALUES
+(1, 101, 'Welcome to the Course!', 'This is the introductory announcement for the course. Please make sure to review the syllabus.', '2024-01-01'),
+(2, 101, 'Assignment 1 Released', 'The first assignment has been posted. Check the assignments section.', '2024-01-05'),
+(3, 102, 'Midterm Exam Schedule', 'The midterm exam will be held next month. Please check the schedule for details.', '2024-05-15'),
+(4, 103, 'Project Groups', 'Project groups have been assigned. Check the project section to find your group.', '2024-08-01');
+
